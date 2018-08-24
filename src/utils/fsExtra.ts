@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
+import * as util from "util";
 
 export const mkDirByPathSync = (
   targetDir: string,
@@ -34,3 +35,5 @@ export const mkDirByPathSync = (
     return curDir;
   }, initDir);
 };
+
+export const writeTpl = util.promisify(fs.writeFile);
