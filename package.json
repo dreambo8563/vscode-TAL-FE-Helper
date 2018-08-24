@@ -24,11 +24,11 @@
     "commands": [
       {
         "command": "extension.initProject",
-        "title": "TAL-initProject"
+        "title": "TAL-init"
       },
       {
         "command": "extension.newPage",
-        "title": "TAL-newPage"
+        "title": "TAL-page"
       }
     ]
   },

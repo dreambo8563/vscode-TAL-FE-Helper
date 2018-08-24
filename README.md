@@ -6,11 +6,11 @@ this plugin is used for FE team in TAL, we want have a tool to generate some tem
 
 > init project
 
-TAL-initProject
+![](https://raw.githubusercontent.com/dreambo8563/vscode-TAL-FE-Helper/master/images/init.gif)
 
 > new a page
 
-TAL-newPage
+![](https://raw.githubusercontent.com/dreambo8563/vscode-TAL-FE-Helper/master/images/page.gif)
 
 ## Requirements
 
@@ -18,12 +18,14 @@ please configure you git well, before using this plugin. just test on mac
 
 ## Release Notes
 
-- initProject - clone our internal project template
-- newPage create the corresponding folder and .vue file, inject blank page
+### 1.0.2
 
-### 1.0.0
+- add plugin icon
 
-just can inject blank page
+### 1.0.1
+
+- pull template project
+- create blank page
 
 ### Git Repo
 
