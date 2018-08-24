@@ -2,6 +2,7 @@
   "name": "tal-fe",
   "displayName": "TAL-FE-Helper",
   "description": "just a snippets helper",
+  "repository": "https://github.com/dreambo8563/vscode-TAL-FE-Helper.git",
   "version": "0.0.1",
   "publisher": "dreambo8563",
   "engines": {
