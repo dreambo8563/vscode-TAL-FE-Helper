@@ -6,7 +6,7 @@
     "type": "git",
     "url": "https://github.com/dreambo8563/vscode-TAL-FE-Helper.git"
   },
-  "version": "0.0.5",
+  "version": "0.0.6",
   "publisher": "dreambo8563",
   "engines": {
     "vscode": "^1.26.0"
@@ -18,7 +18,8 @@
   "activationEvents": [
     "onCommand:extension.initProject",
     "onCommand:extension.newPage",
-    "onCommand:extension.extracTEXT"
+    "onCommand:extension.extracTEXT",
+    "onCommand:extension.extracComponent"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -33,7 +34,11 @@
       },
       {
         "command": "extension.extracTEXT",
-        "title": "ExtracTEXT"
+        "title": "Extrac TEXT"
+      },
+      {
+        "command": "extension.extracComponent",
+        "title": "Extrac Component"
       }
     ],
     "menus": {
@@ -41,6 +46,11 @@
         {
           "when": "editorHasSelection",
           "command": "extension.extracTEXT",
+          "group": "1_modification"
+        },
+        {
+          "when": "editorHasSelection",
+          "command": "extension.extracComponent",
           "group": "1_modification"
         }
       ]

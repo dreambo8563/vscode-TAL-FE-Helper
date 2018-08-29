@@ -6,7 +6,11 @@ import { workspaceCheck } from "./utils/workspace";
 import { execCMD } from "./utils/cmd";
 import { mkDirByPathSync, writeTpl, appendText } from "./utils/fsExtra";
 import * as path from "path";
-import { blankPageTpl, basicFormPageTpl } from "./utils/templates";
+import {
+  blankPageTpl,
+  basicFormPageTpl,
+  injectComponent
+} from "./utils/templates";
 import * as os from "os";
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -154,6 +158,55 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(extracTEXTDisposable);
+
+  let extracComponentDisposable = vscode.commands.registerCommand(
+    "extension.extracComponent",
+    async () => {
+      let editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        return; // No open text editor
+      }
+
+      let selection = editor.selection;
+      let selectedText = editor.document.getText(selection);
+      const rootPath = workspaceCheck();
+      if (!rootPath) {
+        return;
+      }
+
+      const componentPath = await vscode.window.showInputBox({
+        value: "./components/",
+        prompt: "please input the page path",
+        ignoreFocusOut: true
+      });
+      if (!componentPath) {
+        return;
+      }
+      try {
+        await mkDirByPathSync(path.resolve(rootPath, "./src", componentPath));
+      } catch (error) {
+        vscode.window.showErrorMessage(JSON.stringify(error));
+        return;
+      }
+      const componentName = path.parse(componentPath).name;
+      const modulePath = path.resolve(
+        rootPath,
+        "./src",
+        componentPath,
+        "./index.vue"
+      );
+
+      try {
+        await writeTpl(modulePath, injectComponent(componentName, selectedText));
+      } catch (error) {
+        vscode.window.showErrorMessage(JSON.stringify(error));
+        return;
+      }
+      await vscode.window.showInformationMessage(`${componentName} created!`);
+    }
+  );
+
+  context.subscriptions.push(extracComponentDisposable);
 }
 
 // this method is called when your extension is deactivated

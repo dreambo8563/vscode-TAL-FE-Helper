@@ -141,3 +141,18 @@ export default {
 </style>
 
 `;
+
+export const injectComponent = (name: string, html: string) => `
+<template>
+  <div class="${name}-component">
+    ${html}
+  </div>
+</template>
+<script>
+export default {
+  props: {}
+}
+</script>
+<style scoped>
+</style>
+`;

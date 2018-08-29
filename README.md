@@ -18,6 +18,11 @@ please configure you git well, before using this plugin. just test on mac
 
 ## Release Notes
 
+### 0.0.6
+
+- extract text as component (context menu when text selected)
+  ![](https://raw.githubusercontent.com/dreambo8563/vscode-TAL-FE-Helper/master/images/extractComponent.gif)
+
 ### 0.0.5
 
 - new Page with basic Form Template
