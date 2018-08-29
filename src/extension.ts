@@ -4,10 +4,10 @@
 import * as vscode from "vscode";
 import { workspaceCheck } from "./utils/workspace";
 import { execCMD } from "./utils/cmd";
-import { mkDirByPathSync, writeTpl } from "./utils/fsExtra";
+import { mkDirByPathSync, writeTpl, appendText } from "./utils/fsExtra";
 import * as path from "path";
 import { blankPageTpl } from "./utils/templates";
-
+import * as os from "os";
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -26,7 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
       if (!rootPath) {
         return;
       }
-      console.log(rootPath);
+      // console.log(rootPath);
       const gitPath = "http://gitlab.zhiyinlou.com/bpit/FETeam/FE-standard.git";
       try {
         await execCMD(`git clone ${gitPath} ${rootPath}`);
@@ -55,7 +55,7 @@ export function activate(context: vscode.ExtensionContext) {
       if (!rootPath) {
         return;
       }
-      console.log(rootPath);
+      // console.log(rootPath);
       const inputPath = await vscode.window.showInputBox({
         value: "./views/",
         prompt: "please input the page path",
@@ -100,6 +100,52 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(newPageDisposable);
+
+  let extracTEXTDisposable = vscode.commands.registerCommand(
+    "extension.extracTEXT",
+    async () => {
+      let editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        return; // No open text editor
+      }
+
+      let selection = editor.selection;
+      let selectedText = editor.document.getText(selection);
+      const rootPath = workspaceCheck();
+      if (!rootPath) {
+        return;
+      }
+
+      const varName = await vscode.window.showInputBox({
+        prompt: "please input variable name",
+        ignoreFocusOut: true
+      });
+      if (!varName) {
+        return;
+      }
+      const modulePath = path.resolve(rootPath, "./src/constants/TEXT.ts");
+      // const textDoc = await vscode.workspace.openTextDocument(modulePath);
+      // if (!textDoc) {
+      //   return;
+      // }
+      // for (let index = 0; index <= textDoc.lineCount; index++) {
+      //   const element = textDoc.lineAt(index);
+      //   if (!element.isEmptyOrWhitespace) {
+      //     console.log(element.text.split(" "));
+      //   }
+      // }
+      await appendText(
+        modulePath,
+        `export const ${varName.toUpperCase()} = "${selectedText}"` + os.EOL
+      );
+
+      vscode.window.showInformationMessage(
+        `export const ${varName.toUpperCase()} = "${selectedText}" -> inserted!`
+      );
+    }
+  );
+
+  context.subscriptions.push(extracTEXTDisposable);
 }
 
 // this method is called when your extension is deactivated

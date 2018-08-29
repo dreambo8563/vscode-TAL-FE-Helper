@@ -18,11 +18,16 @@ please configure you git well, before using this plugin. just test on mac
 
 ## Release Notes
 
-### 1.0.2
+### 0.0.3
+
+- extract text (context menu when text selected)
+  ![](https://raw.githubusercontent.com/dreambo8563/vscode-TAL-FE-Helper/master/images/extracttext.gif)
+
+### 0.0.2
 
 - add plugin icon
 
-### 1.0.1
+### 0.0.1
 
 - pull template project
 - create blank page

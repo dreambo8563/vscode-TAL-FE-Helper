@@ -37,3 +37,5 @@ export const mkDirByPathSync = (
 };
 
 export const writeTpl = util.promisify(fs.writeFile);
+
+export const appendText = util.promisify(fs.appendFile);
