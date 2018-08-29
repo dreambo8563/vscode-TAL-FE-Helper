@@ -6,7 +6,7 @@ import { workspaceCheck } from "./utils/workspace";
 import { execCMD } from "./utils/cmd";
 import { mkDirByPathSync, writeTpl, appendText } from "./utils/fsExtra";
 import * as path from "path";
-import { blankPageTpl } from "./utils/templates";
+import { blankPageTpl, basicFormPageTpl } from "./utils/templates";
 import * as os from "os";
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -72,7 +72,7 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
       // select the page type
-      vscode.window.showQuickPick(["blank", "form", "list"], {
+      await vscode.window.showQuickPick(["blank", "form", "list"], {
         onDidSelectItem: async item => {
           const filePath = path.resolve(
             rootPath,
@@ -80,12 +80,20 @@ export function activate(context: vscode.ExtensionContext) {
             inputPath,
             "./index.vue"
           );
+          const pageName = path.parse(inputPath).name;
           switch (item) {
             // inject the tpl
             case "blank":
               try {
-                const pageName = path.parse(inputPath).name;
                 await writeTpl(filePath, blankPageTpl(pageName));
+              } catch (error) {
+                vscode.window.showErrorMessage(JSON.stringify(error));
+                return;
+              }
+              break;
+            case "form":
+              try {
+                await writeTpl(filePath, basicFormPageTpl(pageName));
               } catch (error) {
                 vscode.window.showErrorMessage(JSON.stringify(error));
                 return;
