@@ -18,6 +18,11 @@ please configure you git well, before using this plugin. just test on mac
 
 ## Release Notes
 
+### 0.0.7
+
+enhance extract component -> replace selection with component's name and auto import it
+enhance extract text -> replace selection with var name
+
 ### 0.0.6
 
 - extract text as component (context menu when text selected)
