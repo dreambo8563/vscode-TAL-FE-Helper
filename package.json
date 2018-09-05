@@ -18,8 +18,8 @@
   "activationEvents": [
     "onCommand:extension.initProject",
     "onCommand:extension.newPage",
-    "onCommand:extension.extracTEXT",
-    "onCommand:extension.extracComponent"
+    "onCommand:extension.extractTEXT",
+    "onCommand:extension.extractComponent"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -33,24 +33,24 @@
         "title": "TAL-page"
       },
       {
-        "command": "extension.extracTEXT",
-        "title": "Extrac TEXT"
+        "command": "extension.extractTEXT",
+        "title": "Extract TEXT"
       },
       {
-        "command": "extension.extracComponent",
-        "title": "Extrac Component"
+        "command": "extension.extractComponent",
+        "title": "Extract Component"
       }
     ],
     "menus": {
       "editor/context": [
         {
           "when": "editorHasSelection",
-          "command": "extension.extracTEXT",
+          "command": "extension.extractTEXT",
           "group": "1_modification"
         },
         {
           "when": "editorHasSelection",
-          "command": "extension.extracComponent",
+          "command": "extension.extractComponent",
           "group": "1_modification"
         }
       ]

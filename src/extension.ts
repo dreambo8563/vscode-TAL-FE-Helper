@@ -37,15 +37,17 @@ export function activate(context: vscode.ExtensionContext) {
         const rmGit = `rm -rf ${rootPath}/.git`;
         const { stdout, stderr } = await execCMD(rmGit);
         if (stdout || stderr) {
-          vscode.window.showErrorMessage(stdout || stderr);
+          await vscode.window.showErrorMessage(stdout || stderr);
           return;
         }
       } catch (error) {
-        vscode.window.showErrorMessage(error);
+        await vscode.window.showErrorMessage(error);
         return;
       }
 
-      vscode.window.showInformationMessage("Project initialized successfully!");
+      await vscode.window.showInformationMessage(
+        "Project initialized successfully!"
+      );
     }
   );
 
@@ -72,7 +74,7 @@ export function activate(context: vscode.ExtensionContext) {
       try {
         await mkDirByPathSync(path.resolve(rootPath, "./src", inputPath));
       } catch (error) {
-        vscode.window.showErrorMessage(JSON.stringify(error));
+        await vscode.window.showErrorMessage(JSON.stringify(error));
         return;
       }
       // select the page type
@@ -91,7 +93,7 @@ export function activate(context: vscode.ExtensionContext) {
               try {
                 await writeTpl(filePath, blankPageTpl(pageName));
               } catch (error) {
-                vscode.window.showErrorMessage(JSON.stringify(error));
+                await vscode.window.showErrorMessage(JSON.stringify(error));
                 return;
               }
               break;
@@ -99,7 +101,7 @@ export function activate(context: vscode.ExtensionContext) {
               try {
                 await writeTpl(filePath, basicFormPageTpl(pageName));
               } catch (error) {
-                vscode.window.showErrorMessage(JSON.stringify(error));
+                await vscode.window.showErrorMessage(JSON.stringify(error));
                 return;
               }
               break;
@@ -107,14 +109,16 @@ export function activate(context: vscode.ExtensionContext) {
         }
       });
 
-      vscode.window.showInformationMessage("Page initialized successfully!");
+      await vscode.window.showInformationMessage(
+        "Page initialized successfully!"
+      );
     }
   );
 
   context.subscriptions.push(newPageDisposable);
 
   let extracTEXTDisposable = vscode.commands.registerCommand(
-    "extension.extracTEXT",
+    "extension.extractTEXT",
     async () => {
       let editor = vscode.window.activeTextEditor;
       if (!editor) {
@@ -136,22 +140,16 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
       const modulePath = path.resolve(rootPath, "./src/constants/TEXT.ts");
-      // const textDoc = await vscode.workspace.openTextDocument(modulePath);
-      // if (!textDoc) {
-      //   return;
-      // }
-      // for (let index = 0; index <= textDoc.lineCount; index++) {
-      //   const element = textDoc.lineAt(index);
-      //   if (!element.isEmptyOrWhitespace) {
-      //     console.log(element.text.split(" "));
-      //   }
-      // }
+      await editor.edit(bd => {
+        const dataPath = `constants.${varName.toUpperCase()}`;
+        bd.replace(selection, dataPath);
+      });
       await appendText(
         modulePath,
         `export const ${varName.toUpperCase()} = "${selectedText}"` + os.EOL
       );
 
-      vscode.window.showInformationMessage(
+      await vscode.window.showInformationMessage(
         `export const ${varName.toUpperCase()} = "${selectedText}" -> inserted!`
       );
     }
@@ -160,7 +158,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(extracTEXTDisposable);
 
   let extracComponentDisposable = vscode.commands.registerCommand(
-    "extension.extracComponent",
+    "extension.extractComponent",
     async () => {
       let editor = vscode.window.activeTextEditor;
       if (!editor) {
@@ -185,7 +183,7 @@ export function activate(context: vscode.ExtensionContext) {
       try {
         await mkDirByPathSync(path.resolve(rootPath, "./src", componentPath));
       } catch (error) {
-        vscode.window.showErrorMessage(JSON.stringify(error));
+        await vscode.window.showErrorMessage(JSON.stringify(error));
         return;
       }
       const componentName = path.parse(componentPath).name;
@@ -199,8 +197,31 @@ export function activate(context: vscode.ExtensionContext) {
       try {
         await writeTpl(modulePath, injectComponent(componentName, selectedText));
       } catch (error) {
-        vscode.window.showErrorMessage(JSON.stringify(error));
+        await vscode.window.showErrorMessage(JSON.stringify(error));
         return;
+      }
+      for (let index = 0; index < editor.document.lineCount; index++) {
+        if (!editor.document.lineAt(index).isEmptyOrWhitespace) {
+          const content = editor.document.lineAt(index).text;
+
+          if (content.trim().startsWith("<script>")) {
+            const endPos = editor.document.lineAt(index).range.end;
+            let selection = editor.selection;
+            await editor.edit(bd => {
+              bd.insert(
+                endPos,
+                os.EOL +
+                  `import ${componentName} from "@/${componentPath.substr(
+                    1
+                  )}/index.vue"`
+              );
+              const compTagString = `<${componentName}></${componentName}>`;
+              bd.replace(selection, compTagString);
+            });
+
+            break;
+          }
+        }
       }
       await vscode.window.showInformationMessage(`${componentName} created!`);
     }
