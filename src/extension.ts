@@ -211,7 +211,7 @@ export function activate(context: vscode.ExtensionContext) {
               bd.insert(
                 endPos,
                 os.EOL +
-                  `import ${componentName} from "@/${componentPath.substr(
+                  `import ${componentName} from "@${componentPath.substr(
                     1
                   )}/index.vue"`
               );
