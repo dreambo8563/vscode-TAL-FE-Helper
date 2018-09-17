@@ -156,3 +156,46 @@ export default {
 <style scoped>
 </style>
 `;
+
+export const basicListPageTpl = (name: string) => `
+<template>
+    <div class="${name}-page">
+        <el-table :data="tableData" stripe style="width: 100%">
+            <el-table-column prop="date" label="日期" width="180">
+            </el-table-column>
+            <el-table-column prop="name" label="姓名" width="180">
+            </el-table-column>
+            <el-table-column prop="address" label="地址">
+            </el-table-column>
+        </el-table>
+        <br>
+        <el-pagination :current-page.sync="currentPage" @current-change="handleCurrentChange" small layout="prev, pager, next" :total="total">
+        </el-pagination>
+    </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      currentPage: 1,
+      total: 50,
+      tableData: [
+        {
+          date: "2016-05-02",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1518 弄"
+        }
+      ]
+    }
+  },
+  methods: {
+    handleCurrentChange(val) {
+      console.log(val)
+      // TODO: refresh list data
+    }
+  }
+}
+</script>
+
+`;

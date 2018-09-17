@@ -9,6 +9,7 @@ import * as path from "path";
 import {
   blankPageTpl,
   basicFormPageTpl,
+  basicListPageTpl,
   injectComponent
 } from "./utils/templates";
 import * as os from "os";
@@ -100,6 +101,14 @@ export function activate(context: vscode.ExtensionContext) {
             case "form":
               try {
                 await writeTpl(filePath, basicFormPageTpl(pageName));
+              } catch (error) {
+                await vscode.window.showErrorMessage(JSON.stringify(error));
+                return;
+              }
+              break;
+            case "list":
+              try {
+                await writeTpl(filePath, basicListPageTpl(pageName));
               } catch (error) {
                 await vscode.window.showErrorMessage(JSON.stringify(error));
                 return;
