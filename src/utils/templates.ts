@@ -199,3 +199,94 @@ export default {
 </script>
 
 `;
+
+export const basicDialogComTpl = (name: string) => `
+<template>
+    <el-dialog custom-class="${name}-Dialog" title="提示" :close-on-click-modal="false" :show-close="false" :close-on-press-escape="false" :visible="visible" width="30%">
+        <span>这是一段信息</span>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="changeVisible(false)">取 消</el-button>
+            <el-button type="primary" @click="submit">确 定</el-button>
+        </span>
+    </el-dialog>
+</template>
+<script>
+export default {
+  props: {
+    visible: {
+      type: Boolean,
+      default: true
+    },
+    refresh: {
+      type: Function,
+      default: () => {}
+    }
+  },
+  data() {
+    return {}
+  },
+  methods: {
+    changeVisible(visible) {
+      this.$emit("update:visible", visible)
+    },
+    submit() {
+      // submit some data
+      this.refresh()
+      this.changeVisible(false)
+    }
+  }
+}
+</script>
+<style scoped lang="scss">
+</style>
+
+`;
+
+export const basicListComTpl = (name: string) => `
+<template>
+    <div class="${name}">
+        <el-table :data="data" stripe style="width: 100%">
+            <el-table-column prop="date" label="日期" width="180">
+            </el-table-column>
+            <el-table-column prop="name" label="姓名" width="180">
+            </el-table-column>
+            <el-table-column prop="address" label="地址">
+            </el-table-column>
+        </el-table>
+        <br>
+        <el-pagination :current-page="currentPage" @current-change="handleCurrentChange" small layout="prev, pager, next" :total="total">
+        </el-pagination>
+    </div>
+</template>
+
+<script>
+export default {
+  props: {
+    data: {
+      type: Array,
+      default: () => []
+    },
+    total: {
+      type: Number,
+      default: 0
+    },
+    currentPage: {
+      type: Number,
+      default: 1
+    }
+  },
+  data() {
+    return {}
+  },
+  methods: {
+    handleCurrentChange(val) {
+      this.$emit("update:currentPage", val)
+      this.$emit("page-change", val)
+    }
+  }
+}
+</script>
+<style lang="scss" scoped>
+</style>
+
+`;

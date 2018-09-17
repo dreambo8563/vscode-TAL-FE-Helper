@@ -10,7 +10,9 @@ import {
   blankPageTpl,
   basicFormPageTpl,
   basicListPageTpl,
-  injectComponent
+  injectComponent,
+  basicDialogComTpl,
+  basicListComTpl
 } from "./utils/templates";
 import * as os from "os";
 // this method is called when your extension is activated
@@ -183,7 +185,7 @@ export function activate(context: vscode.ExtensionContext) {
 
       const componentPath = await vscode.window.showInputBox({
         value: "./components/",
-        prompt: "please input the page path",
+        prompt: "please input the componet's path",
         ignoreFocusOut: true
       });
       if (!componentPath) {
@@ -237,6 +239,77 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(extracComponentDisposable);
+
+  let initComponentDisposable = vscode.commands.registerCommand(
+    "extension.initComponent",
+    async () => {
+      const rootPath = workspaceCheck();
+      if (!rootPath) {
+        return;
+      }
+      // console.log(rootPath);
+      const inputPath = await vscode.window.showInputBox({
+        value: "./components/",
+        prompt: "please input the component's path",
+        ignoreFocusOut: true
+      });
+      if (!inputPath) {
+        return;
+      }
+      // create path for the page
+      try {
+        await mkDirByPathSync(path.resolve(rootPath, "./src", inputPath));
+      } catch (error) {
+        await vscode.window.showErrorMessage(JSON.stringify(error));
+        return;
+      }
+
+      await vscode.window.showQuickPick(["blank", "dialog", "list"], {
+        onDidSelectItem: async item => {
+          const filePath = path.resolve(
+            rootPath,
+            "./src",
+            inputPath,
+            "./index.vue"
+          );
+          const pageName = path.parse(inputPath).name;
+          switch (item) {
+            // inject the tpl
+            case "blank":
+              try {
+                await writeTpl(filePath, blankPageTpl(pageName));
+              } catch (error) {
+                await vscode.window.showErrorMessage(JSON.stringify(error));
+                return;
+              }
+              break;
+            case "dialog":
+              try {
+                await writeTpl(filePath, basicDialogComTpl(pageName));
+              } catch (error) {
+                await vscode.window.showErrorMessage(JSON.stringify(error));
+                return;
+              }
+              break;
+            case "list":
+              try {
+                await writeTpl(filePath, basicListComTpl(pageName));
+              } catch (error) {
+                await vscode.window.showErrorMessage(JSON.stringify(error));
+                return;
+              }
+              break;
+          }
+        }
+      });
+
+      await vscode.window.showInformationMessage(
+        "Component initialized successfully!"
+      );
+    }
+  );
+
+  context.subscriptions.push(initComponentDisposable);
 }
 
 // this method is called when your extension is deactivated

@@ -18,6 +18,11 @@ please configure you git well, before using this plugin. just test on mac
 
 ## Release Notes
 
+### 0.0.9
+
+- TAL-component
+  we can create component with type of blank/list/dialog
+
 ### 0.0.8
 
 - quickfix when extract component
