@@ -1,6 +1,8 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as util from "util";
+import { execCMD } from "./cmd";
+import * as vscode from "vscode";
 
 export const mkDirByPathSync = (
   targetDir: string,
@@ -35,7 +37,24 @@ export const mkDirByPathSync = (
     return curDir;
   }, initDir);
 };
+export const pullProject = async (gitPath: string, rootPath: string) => {
+  try {
+    await execCMD(`git clone ${gitPath} ${rootPath}`);
+    const rmGit = `rm -rf ${rootPath}/.git`;
+    const { stdout, stderr } = await execCMD(rmGit);
+    if (stdout || stderr) {
+      await vscode.window.showErrorMessage(stdout || stderr);
+      return;
+    }
+  } catch (error) {
+    await vscode.window.showErrorMessage(error);
+    return;
+  }
 
+  await vscode.window.showInformationMessage(
+    "Project initialized successfully!"
+  );
+};
 export const writeTpl = util.promisify(fs.writeFile);
 
 export const appendText = util.promisify(fs.appendFile);

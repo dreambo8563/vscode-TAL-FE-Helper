@@ -3,8 +3,13 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
 import { workspaceCheck } from "./utils/workspace";
-import { execCMD } from "./utils/cmd";
-import { mkDirByPathSync, writeTpl, appendText } from "./utils/fsExtra";
+
+import {
+  mkDirByPathSync,
+  writeTpl,
+  appendText,
+  pullProject
+} from "./utils/fsExtra";
 import * as path from "path";
 import {
   blankPageTpl,
@@ -35,41 +40,19 @@ export function activate(context: vscode.ExtensionContext) {
       }
       // console.log(rootPath);
 
-      await vscode.window.showQuickPick(["PC", "DingDing"], {
-        onDidSelectItem: async item => {
-          switch (item) {
-            // inject the tpl
-            case "PC":
-              const gitPath =
-                "http://gitlab.zhiyinlou.com/bpit/FETeam/FE-standard.git";
-              await pullProject(gitPath, rootPath);
-              break;
-            case "DingDing":
-              const dingGitPath =
-                "http://gitlab.zhiyinlou.com/bpit/FETeam/FE-DINGDING-standard.git";
-              await pullProject(dingGitPath, rootPath);
-              break;
-          }
-        }
-      });
-
-      async function pullProject(gitPath: string, rootPath: string) {
-        try {
-          await execCMD(`git clone ${gitPath} ${rootPath}`);
-          const rmGit = `rm -rf ${rootPath}/.git`;
-          const { stdout, stderr } = await execCMD(rmGit);
-          if (stdout || stderr) {
-            await vscode.window.showErrorMessage(stdout || stderr);
-            return;
-          }
-        } catch (error) {
-          await vscode.window.showErrorMessage(error);
-          return;
-        }
-
-        await vscode.window.showInformationMessage(
-          "Project initialized successfully!"
-        );
+      const selected = await vscode.window.showQuickPick(["PC", "DingDing"]);
+      switch (selected) {
+        // inject the tpl
+        case "PC":
+          const gitPath =
+            "http://gitlab.zhiyinlou.com/bpit/FETeam/FE-standard.git";
+          await pullProject(gitPath, rootPath);
+          break;
+        case "DingDing":
+          const dingGitPath =
+            "http://gitlab.zhiyinlou.com/bpit/FETeam/FE-DINGDING-standard.git";
+          await pullProject(dingGitPath, rootPath);
+          break;
       }
     }
   );
@@ -101,45 +84,40 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
       // select the page type
-      await vscode.window.showQuickPick(["blank", "form", "list"], {
-        onDidSelectItem: async item => {
-          const filePath = path.resolve(
-            rootPath,
-            "./src",
-            inputPath,
-            "./index.vue"
-          );
-          const pageName = path.parse(inputPath).name;
-          switch (item) {
-            // inject the tpl
-            case "blank":
-              try {
-                await writeTpl(filePath, blankPageTpl(pageName));
-              } catch (error) {
-                await vscode.window.showErrorMessage(JSON.stringify(error));
-                return;
-              }
-              break;
-            case "form":
-              try {
-                await writeTpl(filePath, basicFormPageTpl(pageName));
-              } catch (error) {
-                await vscode.window.showErrorMessage(JSON.stringify(error));
-                return;
-              }
-              break;
-            case "list":
-              try {
-                await writeTpl(filePath, basicListPageTpl(pageName));
-              } catch (error) {
-                await vscode.window.showErrorMessage(JSON.stringify(error));
-                return;
-              }
-              break;
+      const selected = await vscode.window.showQuickPick([
+        "blank",
+        "form",
+        "list"
+      ]);
+      const filePath = path.resolve(rootPath, "./src", inputPath, "./index.vue");
+      const pageName = path.parse(inputPath).name;
+      switch (selected) {
+        // inject the tpl
+        case "blank":
+          try {
+            await writeTpl(filePath, blankPageTpl(pageName));
+          } catch (error) {
+            await vscode.window.showErrorMessage(JSON.stringify(error));
+            return;
           }
-        }
-      });
-
+          break;
+        case "form":
+          try {
+            await writeTpl(filePath, basicFormPageTpl(pageName));
+          } catch (error) {
+            await vscode.window.showErrorMessage(JSON.stringify(error));
+            return;
+          }
+          break;
+        case "list":
+          try {
+            await writeTpl(filePath, basicListPageTpl(pageName));
+          } catch (error) {
+            await vscode.window.showErrorMessage(JSON.stringify(error));
+            return;
+          }
+          break;
+      }
       await vscode.window.showInformationMessage(
         "Page initialized successfully!"
       );
@@ -284,45 +262,40 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
 
-      await vscode.window.showQuickPick(["blank", "dialog", "list"], {
-        onDidSelectItem: async item => {
-          const filePath = path.resolve(
-            rootPath,
-            "./src",
-            inputPath,
-            "./index.vue"
-          );
-          const pageName = path.parse(inputPath).name;
-          switch (item) {
-            // inject the tpl
-            case "blank":
-              try {
-                await writeTpl(filePath, blankPageTpl(pageName));
-              } catch (error) {
-                await vscode.window.showErrorMessage(JSON.stringify(error));
-                return;
-              }
-              break;
-            case "dialog":
-              try {
-                await writeTpl(filePath, basicDialogComTpl(pageName));
-              } catch (error) {
-                await vscode.window.showErrorMessage(JSON.stringify(error));
-                return;
-              }
-              break;
-            case "list":
-              try {
-                await writeTpl(filePath, basicListComTpl(pageName));
-              } catch (error) {
-                await vscode.window.showErrorMessage(JSON.stringify(error));
-                return;
-              }
-              break;
+      const selected = await vscode.window.showQuickPick([
+        "blank",
+        "dialog",
+        "list"
+      ]);
+      const filePath = path.resolve(rootPath, "./src", inputPath, "./index.vue");
+      const pageName = path.parse(inputPath).name;
+      switch (selected) {
+        // inject the tpl
+        case "blank":
+          try {
+            await writeTpl(filePath, blankPageTpl(pageName));
+          } catch (error) {
+            await vscode.window.showErrorMessage(JSON.stringify(error));
+            return;
           }
-        }
-      });
-
+          break;
+        case "dialog":
+          try {
+            await writeTpl(filePath, basicDialogComTpl(pageName));
+          } catch (error) {
+            await vscode.window.showErrorMessage(JSON.stringify(error));
+            return;
+          }
+          break;
+        case "list":
+          try {
+            await writeTpl(filePath, basicListComTpl(pageName));
+          } catch (error) {
+            await vscode.window.showErrorMessage(JSON.stringify(error));
+            return;
+          }
+          break;
+      }
       await vscode.window.showInformationMessage(
         "Component initialized successfully!"
       );

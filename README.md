@@ -18,6 +18,10 @@ please configure you git well, before using this plugin. just test on mac
 
 ## Release Notes
 
+### 0.0.11
+
+- quick-fix on all picker async issue
+
 ### 0.0.10
 
 - TAL-init
