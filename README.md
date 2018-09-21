@@ -18,6 +18,11 @@ please configure you git well, before using this plugin. just test on mac
 
 ## Release Notes
 
+### 0.0.10
+
+- TAL-init
+  we can pick PC/DingDing template now
+
 ### 0.0.9
 
 - TAL-component

@@ -34,23 +34,43 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
       // console.log(rootPath);
-      const gitPath = "http://gitlab.zhiyinlou.com/bpit/FETeam/FE-standard.git";
-      try {
-        await execCMD(`git clone ${gitPath} ${rootPath}`);
-        const rmGit = `rm -rf ${rootPath}/.git`;
-        const { stdout, stderr } = await execCMD(rmGit);
-        if (stdout || stderr) {
-          await vscode.window.showErrorMessage(stdout || stderr);
+
+      await vscode.window.showQuickPick(["PC", "DingDing"], {
+        onDidSelectItem: async item => {
+          switch (item) {
+            // inject the tpl
+            case "PC":
+              const gitPath =
+                "http://gitlab.zhiyinlou.com/bpit/FETeam/FE-standard.git";
+              await pullProject(gitPath, rootPath);
+              break;
+            case "DingDing":
+              const dingGitPath =
+                "http://gitlab.zhiyinlou.com/bpit/FETeam/FE-DINGDING-standard.git";
+              await pullProject(dingGitPath, rootPath);
+              break;
+          }
+        }
+      });
+
+      async function pullProject(gitPath: string, rootPath: string) {
+        try {
+          await execCMD(`git clone ${gitPath} ${rootPath}`);
+          const rmGit = `rm -rf ${rootPath}/.git`;
+          const { stdout, stderr } = await execCMD(rmGit);
+          if (stdout || stderr) {
+            await vscode.window.showErrorMessage(stdout || stderr);
+            return;
+          }
+        } catch (error) {
+          await vscode.window.showErrorMessage(error);
           return;
         }
-      } catch (error) {
-        await vscode.window.showErrorMessage(error);
-        return;
-      }
 
-      await vscode.window.showInformationMessage(
-        "Project initialized successfully!"
-      );
+        await vscode.window.showInformationMessage(
+          "Project initialized successfully!"
+        );
+      }
     }
   );
 
