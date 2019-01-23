@@ -1,5 +1,7 @@
 # README
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/dreambo8563/vscode-TAL-FE-Helper.svg)](https://greenkeeper.io/)
+
 this plugin is used for FE team in TAL, we want have a tool to generate some template code and follow our code standard.
 
 ## Features
