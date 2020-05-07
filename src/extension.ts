@@ -8,7 +8,7 @@ import {
   mkDirByPathSync,
   writeTpl,
   appendText,
-  pullProject
+  pullProject,
 } from "./utils/fsExtra";
 import * as path from "path";
 import {
@@ -17,7 +17,7 @@ import {
   basicListPageTpl,
   injectComponent,
   basicDialogComTpl,
-  basicListComTpl
+  basicListComTpl,
 } from "./utils/templates";
 import * as os from "os";
 // this method is called when your extension is activated
@@ -45,12 +45,12 @@ export function activate(context: vscode.ExtensionContext) {
         // inject the tpl
         case "PC":
           const gitPath =
-            "http://gitlab.zhiyinlou.com/bpit/FETeam/FE-standard.git";
+            "https://git.100tal.com/jituan_xinxi_fe/FE-standard.git";
           await pullProject(gitPath, rootPath);
           break;
         case "DingDing":
           const dingGitPath =
-            "http://gitlab.zhiyinlou.com/bpit/FETeam/FE-DINGDING-standard.git";
+            "https://git.100tal.com/jituan_xinxi_fe/FE-DINGDING-standard.git";
           await pullProject(dingGitPath, rootPath);
           break;
       }
@@ -71,7 +71,7 @@ export function activate(context: vscode.ExtensionContext) {
       const inputPath = await vscode.window.showInputBox({
         value: "./views/",
         prompt: "please input the page path",
-        ignoreFocusOut: true
+        ignoreFocusOut: true,
       });
       if (!inputPath) {
         return;
@@ -87,9 +87,14 @@ export function activate(context: vscode.ExtensionContext) {
       const selected = await vscode.window.showQuickPick([
         "blank",
         "form",
-        "list"
+        "list",
       ]);
-      const filePath = path.resolve(rootPath, "./src", inputPath, "./index.vue");
+      const filePath = path.resolve(
+        rootPath,
+        "./src",
+        inputPath,
+        "./index.vue"
+      );
       const pageName = path.parse(inputPath).name;
       switch (selected) {
         // inject the tpl
@@ -143,13 +148,13 @@ export function activate(context: vscode.ExtensionContext) {
 
       const varName = await vscode.window.showInputBox({
         prompt: "please input variable name",
-        ignoreFocusOut: true
+        ignoreFocusOut: true,
       });
       if (!varName) {
         return;
       }
       const modulePath = path.resolve(rootPath, "./src/constants/TEXT.ts");
-      await editor.edit(bd => {
+      await editor.edit((bd) => {
         const dataPath = `constants.${varName.toUpperCase()}`;
         bd.replace(selection, dataPath);
       });
@@ -184,7 +189,7 @@ export function activate(context: vscode.ExtensionContext) {
       const componentPath = await vscode.window.showInputBox({
         value: "./components/",
         prompt: "please input the componet's path",
-        ignoreFocusOut: true
+        ignoreFocusOut: true,
       });
       if (!componentPath) {
         return;
@@ -204,7 +209,10 @@ export function activate(context: vscode.ExtensionContext) {
       );
 
       try {
-        await writeTpl(modulePath, injectComponent(componentName, selectedText));
+        await writeTpl(
+          modulePath,
+          injectComponent(componentName, selectedText)
+        );
       } catch (error) {
         await vscode.window.showErrorMessage(JSON.stringify(error));
         return;
@@ -216,7 +224,7 @@ export function activate(context: vscode.ExtensionContext) {
           if (content.trim().startsWith("<script>")) {
             const endPos = editor.document.lineAt(index).range.end;
             let selection = editor.selection;
-            await editor.edit(bd => {
+            await editor.edit((bd) => {
               bd.insert(
                 endPos,
                 os.EOL +
@@ -249,7 +257,7 @@ export function activate(context: vscode.ExtensionContext) {
       const inputPath = await vscode.window.showInputBox({
         value: "./components/",
         prompt: "please input the component's path",
-        ignoreFocusOut: true
+        ignoreFocusOut: true,
       });
       if (!inputPath) {
         return;
@@ -265,9 +273,14 @@ export function activate(context: vscode.ExtensionContext) {
       const selected = await vscode.window.showQuickPick([
         "blank",
         "dialog",
-        "list"
+        "list",
       ]);
-      const filePath = path.resolve(rootPath, "./src", inputPath, "./index.vue");
+      const filePath = path.resolve(
+        rootPath,
+        "./src",
+        inputPath,
+        "./index.vue"
+      );
       const pageName = path.parse(inputPath).name;
       switch (selected) {
         // inject the tpl
